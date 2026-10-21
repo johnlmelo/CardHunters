@@ -1,0 +1,44 @@
+/* Reset mínimo (mantido do arquivo original). */
+:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}
+img{max-width:100%}
+[hidden]:not([hidden=until-found i]){display:none!important}
+
+/* Layout: HUD de madeira no topo, ilha em canvas ocupando o resto, sobreposições em pergaminho. Visual único (noite no mar), escolhido de propósito. */
+:root{
+  --ink:#0f1d2b; --deep:#16324a; --plank:#5a3a22; --plank2:#7a5232;
+  --parch:#f6e7c4; --parch2:#e8d3a2; --text:#f4efe2; --muted:#a9bccb; --gold:#f0b429; --red:#d9534f;
+  --ouro:#e0a526; --fome:#3f9b4c; --ferro:#7d8794; --poder:#8a52d1; --inveja:#22a197;
+  --display:"Luckiest Guy","Arial Rounded MT Bold",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--ink);color:var(--text);font-family:var(--body);overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column}
+.hud{background:linear-gradient(var(--plank2),var(--plank));border-bottom:3px solid #2e1d10;
+  padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));padding-block:8px}
+.logo{font-family:var(--display);letter-spacing:.04em;color:var(--gold);text-shadow:0 2px 0 #2e1d10;line-height:1}
+.chip{background:rgba(0,0,0,.28);border-radius:999px;padding:3px 10px;font-weight:800;font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.btn{font-family:var(--display);letter-spacing:.05em;border-radius:12px;padding:8px 14px;border:0;cursor:pointer;
+  box-shadow:0 3px 0 rgba(0,0,0,.45);transition:transform .08s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.45)}
+.btn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.btn-gold{background:var(--gold);color:#3a2408}
+.btn-wood{background:var(--parch2);color:#3a2408}
+.btn-red{background:var(--red);color:#fff}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+#game{flex:1;min-height:0;position:relative;background:#1d5f8a}
+#toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-family:var(--display);font-size:20px;
+  color:var(--parch);text-shadow:0 2px 0 #000,0 0 12px rgba(0,0,0,.6);pointer-events:none;transition:opacity .5s;white-space:nowrap}
+#hint{position:absolute;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(10px + env(safe-area-inset-bottom,0px));
+  font-size:12px;background:rgba(15,29,43,.75);padding:6px 10px;border-radius:10px;color:var(--muted);pointer-events:none;max-width:calc(100% - 24px)}
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(8,16,26,.82);display:flex;align-items:center;justify-content:center;
+  padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));
+  padding-block:calc(12px + env(safe-area-inset-top,0px)) calc(12px + env(safe-area-inset-bottom,0px))}
+.panel{background:var(--parch);color:#3a2408;border-radius:18px;border:4px solid #3a2408;box-shadow:0 8px 0 rgba(0,0,0,.4);
+  width:100%;max-width:560px;max-height:100%;overflow:auto;padding:18px}
+.panel h2{font-family:var(--display);font-size:26px;letter-spacing:.03em;text-wrap:balance;line-height:1.1}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

@@ -1,0 +1,53 @@
+/* Cartas, itens e etiquetas de tipo. */
+.card{position:relative;width:100%;aspect-ratio:3/4;border-radius:10px;background:var(--parch);color:#2b1a07;
+  border:3px solid var(--tc);box-shadow:0 3px 0 rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden;
+  font-family:var(--body);transition:transform .15s,box-shadow .15s;user-select:none}
+.card .art{position:relative;flex:1;min-height:0;background:radial-gradient(circle at 50% 60%,color-mix(in srgb,var(--tc) 55%,#fff),var(--tc));display:flex;align-items:center;justify-content:center}
+.mon{height:94%;aspect-ratio:1;max-width:96%;background-size:200% 100%;background-repeat:no-repeat;image-rendering:pixelated;animation:idle 1.1s steps(1) infinite}
+@keyframes idle{0%{background-position:0 0}50%{background-position:100% 0}}
+.card .nm{font-weight:900;font-size:clamp(8px,2.3vw,11px);line-height:1.1;padding:3px 4px 0;text-align:center;min-height:2.3em;display:flex;align-items:center;justify-content:center}
+.card .st{display:flex;justify-content:space-between;padding:2px 4px 4px;font-weight:900;font-size:clamp(10px,2.8vw,13px);font-variant-numeric:tabular-nums}
+.card .a{background:#b8402f;color:#fff;border-radius:6px;padding:0 5px}
+.card .h{background:#2c5d8f;color:#fff;border-radius:6px;padding:0 5px}
+.card .cost{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#1f4e79;color:#fff;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+.card .rar{position:absolute;top:4px;right:4px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;background:rgba(255,255,255,.85);border-radius:4px;padding:1px 3px}
+.card.playable{cursor:pointer;box-shadow:0 0 0 3px var(--gold),0 3px 0 rgba(0,0,0,.35)}
+.card.playable:hover{transform:translateY(-4px)}
+.card.dim{filter:grayscale(.6) brightness(.8)}
+.eqs{position:absolute;left:2px;bottom:2px;display:flex;gap:1px}
+.eqs img{width:clamp(11px,3.4vw,16px);height:auto;image-rendering:pixelated;background:rgba(255,255,255,.8);border-radius:3px}
+.card .lvl{position:absolute;right:3px;bottom:1px;font-size:clamp(7px,2vw,10px);color:#ffd95e;text-shadow:0 1px 0 #000,1px 0 0 #000,-1px 0 0 #000,0 -1px 0 #000;letter-spacing:-1px}
+.card .a.up,.card .h.up{box-shadow:0 0 0 2px #ffd95e}
+.card.evolved .art{box-shadow:inset 0 0 0 2px rgba(255,217,94,.9)}
+.card.shielded::before{content:"";position:absolute;inset:0;border-radius:7px;box-shadow:inset 0 0 0 3px #7fd3ff,inset 0 0 12px #7fd3ff;pointer-events:none;z-index:2}
+.card.forged{animation:forged .6s}
+@keyframes forged{40%{transform:scale(1.08) rotate(-2deg);filter:brightness(1.5)}}
+.stat-a{color:#b8402f}.stat-d{color:#2c5d8f}
+.t-ouro{--tc:var(--ouro)}.t-fome{--tc:var(--fome)}.t-ferro{--tc:var(--ferro)}.t-poder{--tc:var(--poder)}.t-inveja{--tc:var(--inveja)}
+
+/* Carta de equipamento: mesma moldura do Cativo, arte listrada e selo de bigorna no lugar do custo. */
+.card.equip .art{background:repeating-linear-gradient(45deg,rgba(255,255,255,.14) 0 5px,transparent 5px 10px),radial-gradient(circle at 50% 55%,color-mix(in srgb,var(--tc) 40%,#fff),color-mix(in srgb,var(--tc) 80%,#000))}
+.card .eqart{height:62%;aspect-ratio:1;image-rendering:pixelated;filter:drop-shadow(0 2px 0 rgba(0,0,0,.35))}
+.card .kind{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:6px;background:#3a2408;color:#ffd95e;font-size:12px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;line-height:1}
+.card .abtag{position:absolute;left:50%;bottom:3px;transform:translateX(-50%);font-size:clamp(7px,2vw,10px);font-weight:900;background:rgba(255,255,255,.88);border-radius:4px;padding:0 4px;white-space:nowrap;max-width:94%;overflow:hidden;text-overflow:ellipsis}
+.card .st.one{justify-content:center}
+.card .st .none{font-size:clamp(7px,2vw,10px);opacity:.6;margin:0 auto}
+
+/* Selos do canto (custo, raridade, equipamento) ficam acima da arte. */
+.card .cost,.card .rar,.card .kind{z-index:3}
+
+/* Baralho: coluna lateral com as 9 cartas ao lado da coleção (empilha no celular). */
+.panel.panel-wide{max-width:960px}
+.deck-layout{display:grid;grid-template-columns:270px 1fr;gap:14px;align-items:start}
+.deck-side{position:sticky;top:0;display:flex;flex-direction:column;gap:8px;background:rgba(58,36,8,.08);border-radius:12px;padding:8px}
+.deck-list{display:flex;flex-direction:column;gap:4px}
+.deck-row{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.6);border:2px solid var(--tc);border-left-width:6px;border-radius:8px;padding:2px 6px 2px 4px;cursor:pointer;color:#2b1a07;min-height:38px}
+.deck-row:hover{background:rgba(255,255,255,.85)}
+.deck-row:focus-visible{outline:3px solid #3a2408;outline-offset:1px}
+.deck-row .dcost{flex:none;width:20px;height:20px;border-radius:50%;background:#1f4e79;color:#fff;font-weight:900;font-size:11px;display:flex;align-items:center;justify-content:center}
+.deck-row .dart{flex:none;width:32px;height:32px;background-size:200% 100%;background-position:0 0;image-rendering:pixelated}
+.deck-row .dname{flex:1;min-width:0;font-weight:900;font-size:12px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.deck-row .dstats{flex:none;font-weight:900;font-size:11px;font-variant-numeric:tabular-nums}
+.deck-row .dx{flex:none;font-weight:900;opacity:.45}
+.deck-empty{min-height:38px;border:2px dashed rgba(58,36,8,.35);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:rgba(58,36,8,.55)}
+@media (max-width:640px){.deck-layout{grid-template-columns:1fr}.deck-side{position:static}}

@@ -1,0 +1,17 @@
+/* Forja. */
+.fg-top{display:flex;gap:12px;align-items:flex-start}
+.fg-cards{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(92px,1fr))}
+.fg-cards.mini{grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:6px}
+.eqcell{display:flex;flex-direction:column;gap:4px}
+.eqcell .btn{width:100%}
+.eqdesc{font-size:10px;line-height:1.25;font-weight:700}
+.eqactions{display:flex;flex-direction:column;gap:2px;margin-top:auto}
+.eqowner{font-size:10px;font-weight:800;text-align:center;line-height:1.1}
+.slot-card{aspect-ratio:3/4;border:2px dashed rgba(58,36,8,.4);border-radius:10px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;font-weight:800;color:rgba(58,36,8,.6);padding:6px}
+.fg-card{flex:0 0 clamp(96px,30%,150px)}
+.fg-name{font-family:var(--display);font-size:20px;letter-spacing:.03em;line-height:1.1}
+.fg-h{font-family:var(--display);font-size:16px;letter-spacing:.04em;margin-top:4px}
+.fpick{border-radius:12px;cursor:pointer}
+.fpick .card{pointer-events:none}
+.fpick.on .card{box-shadow:0 0 0 4px var(--gold),0 3px 0 rgba(0,0,0,.35);transform:translateY(-3px)}
+.fpick:focus-visible{outline:3px solid #3a2408;outline-offset:2px}

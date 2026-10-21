@@ -1,0 +1,5 @@
+/* Estilos do jogo. Carregados depois do Tailwind para ter prioridade, como no original. */
+@import './base.css';
+@import './cards.css';
+@import './forge.css';
+@import './duel.css';

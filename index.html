@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="claude:viewport-fit-sides" content="cover">
+  <title>Card Hunters</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Nunito:wght@500;700;900&display=swap">
+</head>
+<body>
+<div id="app">
+  <header class="hud flex items-center gap-2 flex-wrap">
+    <div class="logo text-xl sm:text-2xl mr-auto">Card Hunters</div>
+    <span class="chip" id="hudCards">Cartas 0</span>
+    <span class="chip" id="hudChests">Baús 0/0</span>
+    <span class="chip" id="hudSecrets">Segredos 0/0</span>
+    <span class="chip" id="hudWins">Vitórias 0</span>
+    <button class="btn btn-wood text-sm" id="btnMap" hidden>Mapa</button>
+    <button class="btn btn-wood text-sm" id="btnForge">Forja</button>
+    <button class="btn btn-wood text-sm" id="btnDeck">Baralho</button>
+    <button class="btn btn-wood text-sm" id="btnCol">Coleção</button>
+    <button class="btn btn-gold text-sm" id="btnArena">Arena</button>
+  </header>
+  <div id="game">
+    <div id="toast" style="opacity:0"></div>
+    <div id="hint">Toque no mapa para andar · setas/WASD também funcionam</div>
+  </div>
+</div>
+
+<!-- Introdução -->
+<div class="overlay" id="intro" hidden>
+  <div class="panel flex flex-col gap-3">
+    <h2>Terra à vista, explorador!</h2>
+    <p class="text-sm leading-relaxed">Você é um caçador de cartas e acabou de desembarcar no Porto dos Náufragos. Dizem que a ilha guarda baús cheios de cartas, e em cada carta vive um <b>Cativo</b>: uma criatura nascida da cobiça de alguém.</p>
+    <ul class="text-sm leading-relaxed list-disc pl-5 flex flex-col gap-1">
+      <li>Toque no chão para caminhar. No teclado, use setas ou WASD.</li>
+      <li>Chegue perto de um <b>baú</b> e aperte <b>Espaço</b> para abrir e ganhar cartas. Na tela de toque, toque no baú.</li>
+      <li>Encoste num <b>duelista</b> para duelar. Os guardiões têm coroa no nome.</li>
+      <li>Seu <b>baralho</b> tem <b>9 cartas</b> e entra direto em todos os duelos. Troque as cartas quando quiser no botão <b>Baralho</b>. Se elas acabarem antes de você nocautear o rival, você perde.</li>
+      <li>Arraste cartas da mão para o espaço que quiser. O Cativo já pode atacar no turno em que entra, exceto no primeiro turno do duelo. Para atacar, toque num Cativo seu e depois no alvo, ou arraste um sobre o outro.</li>
+      <li>Ataque maior que a defesa destrói o Cativo e o excedente sai da vida do dono. Ataque igual só destrói. Ataque menor é bloqueado.</li>
+      <li>O dano que não destrói fica acumulado: a defesa do Cativo atingido vai caindo de rodada em rodada até ele ser destruído.</li>
+      <li>Não existe ataque direto: a vida do oponente só cai pelo excedente quando um Cativo dele é destruído. O campo tem 5 espaços, e quem terminar o próprio turno sem nenhum Cativo em campo perde.</li>
+      <li>Explore com atenção: há <b>cavernas</b> escuras com tesouros e <b>lugares secretos</b> escondidos atrás de árvores e rochas que parecem sólidas.</li>
+      <li>Na <b>Forja</b>, equipe os Cativos do seu baralho com itens do mesmo tipo para ganhar atributos e poderes como Escudo e Contra-ataque.</li>
+      <li>Na <b>Arena</b> você enfrenta outros duelistas.</li>
+    </ul>
+    <p class="typeline">Vantagem de tipo (+50% de dano): <b style="background:var(--ouro)">Ouro</b> › <b style="background:var(--fome)">Fome</b> › <b style="background:var(--ferro)">Ferro</b> › <b style="background:var(--poder)">Poder</b> › <b style="background:var(--inveja)">Inveja</b> › Ouro</p>
+    <button class="btn btn-gold self-start text-lg" id="btnStart">Explorar</button>
+  </div>
+</div>
+
+<!-- Revelação de cartas -->
+<div class="overlay" id="reveal" hidden>
+  <div class="panel flex flex-col gap-3 reveal">
+    <h2 id="rvTitle">Baú aberto!</h2>
+    <p class="text-sm" id="rvText"></p>
+    <div id="rvCards" class="grid grid-cols-3 gap-3"></div>
+    <div id="rvItems" class="flex flex-col gap-2"></div>
+    <button class="btn btn-gold self-start" id="rvOk">Continuar</button>
+  </div>
+</div>
+
+<!-- Coleção -->
+<div class="overlay" id="collection" hidden>
+  <div class="panel flex flex-col gap-3">
+    <div class="flex items-center gap-2"><h2 class="mr-auto">Sua coleção</h2><button class="btn btn-wood" id="colClose">Fechar</button></div>
+    <p class="typeline">Vantagem: <b style="background:var(--ouro)">Ouro</b> › <b style="background:var(--fome)">Fome</b> › <b style="background:var(--ferro)">Ferro</b> › <b style="background:var(--poder)">Poder</b> › <b style="background:var(--inveja)">Inveja</b> › Ouro</p>
+    <p class="text-xs" id="colInfo"></p>
+    <div id="colGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-3"></div>
+    <button class="btn btn-red self-start text-sm" id="colReset">Recomeçar a aventura</button>
+    <p class="text-xs" id="colResetMsg" hidden>Toque de novo para confirmar: o progresso será apagado.</p>
+  </div>
+</div>
+
+<!-- Matchmaking -->
+<div class="overlay" id="match" hidden>
+  <div class="panel text-center flex flex-col gap-2 items-center">
+    <h2>Procurando oponente…</h2>
+    <p class="text-sm" id="matchText">Duelistas da arena (simulados nesta versão)</p>
+  </div>
+</div>
+
+<!-- Forja -->
+<div class="overlay" id="forge" hidden>
+  <div class="panel flex flex-col gap-3">
+    <div class="flex items-center gap-2"><h2 class="mr-auto">Forja</h2><span class="chip" id="fgInfo" style="background:#3a2408;color:var(--parch)"></span><button class="btn btn-wood" id="fgClose">Fechar</button></div>
+    <p class="text-sm">Equipe seus Cativos com itens do mesmo tipo. Espaços: comum 1, rara 2, lendária 3. Com 2 ou mais equipamentos o Cativo ganha Ressonância (+1 de ataque). Aqui aparecem só os Cativos do seu baralho; troque as cartas no botão Baralho.</p>
+    <div id="fgDetail" class="flex flex-col gap-2"></div>
+    <div class="fg-h">Cativos do baralho</div>
+    <div id="fgGrid" class="grid grid-cols-4 sm:grid-cols-6 gap-2"></div>
+  </div>
+</div>
+
+<!-- Baralho -->
+<div class="overlay" id="deckb" hidden>
+  <div class="panel panel-wide flex flex-col gap-3">
+    <div class="flex items-center gap-2"><h2 class="mr-auto">Baralho</h2><span class="chip" id="dbCount" style="background:#3a2408;color:var(--parch)">0/9</span><button class="btn btn-wood" id="dbClose">Fechar</button></div>
+    <p class="text-sm">Seu baralho tem 9 cartas e entra em todos os duelos. Toque numa carta da coleção para colocar no baralho, ou numa carta do baralho para tirar. Melhore aos poucos!</p>
+    <div class="deck-layout">
+      <aside class="deck-side">
+        <div class="fg-h">Seu baralho</div>
+        <div id="dbDeck" class="deck-list"></div>
+        <div class="flex gap-2 flex-wrap">
+          <button class="btn btn-wood text-sm" id="dbAuto">Mais fortes</button>
+          <button class="btn btn-wood text-sm" id="dbClear">Limpar</button>
+        </div>
+        <p class="text-xs font-bold" id="dbMsg"></p>
+      </aside>
+      <div class="deck-main">
+        <div class="fg-h">Coleção</div>
+        <div id="dbGrid" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Duelo: acontece sobre o mapa da fase (o fundo fica visível, com as bordas escurecidas) -->
+<div class="overlay duel-overlay" id="duel" hidden>
+  <div class="duel-arena">
+    <div class="duel-plate opp" id="oHead">
+      <img class="plate-figure" id="oPic" alt="">
+      <div class="plate-body">
+        <div class="plate-name"><svg class="plate-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 5 7l4.5 4L12 4l2.5 7L19 7l2 11z" fill="#ffd95e" stroke="#3a2408" stroke-width="1.6" stroke-linejoin="round"/></svg><span id="oName" class="truncate">Oponente</span></div>
+        <div class="plate-bar red"><i id="oLifeBar"></i><span id="oLife">10/10</span></div>
+      </div>
+      <span class="plate-sub" id="oInfo">Mão 0 · Restam 9</span>
+    </div>
+
+    <div class="duel-board">
+      <div class="duel-field opp" id="oField"></div>
+      <div class="log" id="log">O duelo vai começar!</div>
+      <div class="duel-field mine" id="pField"></div>
+    </div>
+
+    <div class="duel-plate me" id="pHead">
+      <img class="plate-figure" id="pPic" alt="">
+      <div class="plate-body">
+        <div class="plate-name"><svg class="plate-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z" fill="#4fc3f7" stroke="#0b2a3f" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Você</span></div>
+        <div class="plate-bar blue"><i id="pLifeBar"></i><span id="pLife">10/10</span></div>
+      </div>
+    </div>
+
+    <aside class="duel-round">
+      <svg class="compass" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="#f6e7c4" stroke="#3a2408" stroke-width="3"/><circle cx="24" cy="24" r="16" fill="none" stroke="#b08a52" stroke-width="1.5"/><path d="M24 6l4 18-4 18-4-18z" fill="#d9534f" stroke="#3a2408" stroke-width="1.2"/><path d="M6 24l18-4 18 4-18 4z" fill="#3a2408" opacity=".75"/><circle cx="24" cy="24" r="3" fill="#f0b429" stroke="#3a2408"/></svg>
+      <div><b id="round">Rodada 1</b><span id="pDeck">Deck 0 · Restam 9</span></div>
+    </aside>
+
+    <aside class="duel-energy">
+      <svg class="bolt" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z" fill="#4fc3f7" stroke="#b3e5fc" stroke-width="1.2" stroke-linejoin="round"/></svg>
+      <div><span class="energy-label">Energia</span><div class="pips" id="pips"></div></div>
+    </aside>
+
+    <div class="duel-hand" id="hand"></div>
+
+    <div class="duel-actions">
+      <button class="btn-turn" id="btnEnd"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3l9 9M13 12l-2 2M3 21l4-4M7 17l-2-2M20 3l-9 9M11 12l2 2M21 21l-4-4M17 17l2-2" stroke="#3a2408" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg>Passar turno</button>
+      <button class="btn-quit" id="btnQuit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 22V3M5 4h12l-3 4 3 4H5" stroke="#cfd8e3" stroke-width="2.2" stroke-linejoin="round" fill="#cfd8e3" fill-opacity=".25"/></svg>Desistir</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
